@@ -6,7 +6,7 @@ awerouter is a smart LLM router that sits between your coding agent and the upst
 
 But routing is only half the problem. The other half is knowing whether the routing is any good. How much of your traffic actually goes to flash? Is your `longContextThreshold` too aggressive? Are you saving money or just adding latency? awerouter ships with a usage analytics suite that answers these questions — and a skill system that lets your agent answer them for you.
 
-GitHub: [github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub: [github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## The Skill: Let Your Agent Run the Router
 
@@ -19,7 +19,7 @@ awerouter is designed to be operated by your agent. You say what you want; the a
 ```bash
 npm install -g aweskill
 aweskill store init
-aweskill install mugpeng/awerouter
+aweskill install wehuman01/awerouter
 aweskill agent add skill awerouter --global --agent claude-code
 ```
 
@@ -31,7 +31,7 @@ If you don't have Node.js or prefer a direct approach, copy the skill file into 
 
 ```bash
 mkdir -p ~/.claude/skills/awerouter/
-curl -fsSL https://raw.githubusercontent.com/mugpeng/awerouter/main/resources/skills/awerouter/SKILL.md -o ~/.claude/skills/awerouter/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/wehuman01/awerouter/main/resources/skills/awerouter/SKILL.md -o ~/.claude/skills/awerouter/SKILL.md
 ```
 
 ### What the Skill Can Do
@@ -208,7 +208,7 @@ The agent reads `README.ai.md` and follows it. The skill maps your words to comm
 
 You can also install awerouter in one prompt by telling your agent:
 
-> "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."
+> "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."
 
 The agent runs `pip install`, sets up the skill, initializes the config, edits `~/.zshrc`, and reports back. You start `awerouter serve` yourself.
 
@@ -219,12 +219,12 @@ aweshare is part of a growing family of "awesome" tools — CLI-first, local-fir
 ### CLI Tools
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
-- **[awerouter](https://github.com/mugpeng/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
+- **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
 - **[aweshare](https://github.com/wehuman01/aweshare)** — Share local Ollama/vLLM backends, domestic coding plans, or authorized OpenAI/Anthropic subscriptions through a self-hosted hub — a sharing economy for tokens.
 - **[awewarm](https://github.com/wehuman01/awewarm)** — Subscription window warmer that keeps AI coding-plan windows active, for local setups and through a remote hub server.
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
+- **[awescholar](https://github.com/wehuman01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
 
 ### Desktop Apps
 

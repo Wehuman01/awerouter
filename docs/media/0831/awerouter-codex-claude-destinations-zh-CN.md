@@ -4,7 +4,7 @@
 
 上一篇《awerouter更新：把本地模型放上flash》把本地模型放上了 flash 的位置；这篇是它的后续，轮到另一半：你已经付费的订阅。ChatGPT 订阅（通过 Codex CLI 的登录）和 Claude Pro 套餐，现在都能成为路由目的地——订阅登录和 API key 并排写进 providers.json，订阅自带的模型就能混进 flash/pro 路由，像任何其他服务商一样。
 
-GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub：[github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## 订阅登录：codex 和 claude 都能当目的地
 
@@ -36,7 +36,7 @@ GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
 如果你在 Claude Code、Codex 或任何其他编程智能体里，对它说：
 
 ```text
-阅读 https://github.com/mugpeng/awerouter/blob/main/README.ai.md，按照说明安装并配置 awerouter。
+阅读 https://github.com/wehuman01/awerouter/blob/main/README.ai.md，按照说明安装并配置 awerouter。
 ```
 
 ### 或者自己动手
@@ -64,12 +64,12 @@ aweshare 是一个不断壮大的 "awesome" 工具家族的一部分 — CLI 优
 ### CLI 工具
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
-- **[awerouter](https://github.com/mugpeng/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
+- **[awerouter](https://github.com/wehuman01/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
 - **[aweshare](https://github.com/wehuman01/aweshare)** — 通过自建 Hub 共享本地 Ollama/vLLM 后端、国内编程计划或授权的 OpenAI/Anthropic 订阅 — token 的共享经济。
 - **[awewarm](https://github.com/wehuman01/awewarm)** — 订阅窗口保温器，保持 AI 编程套餐窗口激活，适用于本地设置和远程 hub 服务器。
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
+- **[awescholar](https://github.com/wehuman01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
 
 ### 桌面应用
 

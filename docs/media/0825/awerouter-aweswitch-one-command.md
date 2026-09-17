@@ -8,11 +8,11 @@ Those exports rot. They live in the wrong terminal. They point at a daemon that 
 
 The fix is not another feature in the router. It is a tool you may already have sitting next to it.
 
-GitHub: [github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub: [github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## The Other Half Already Exists
 
-[aweswitch](https://github.com/Webioinfo01/aweswitch) is a session launcher. Profiles live in one JSON file (`~/.config/aweswitch/config.json`); `aweswitch <profile>` starts the agent with that profile's environment frozen into the new process. Already-open sessions keep whatever they started with, and different terminals run different profiles side by side.
+[aweswitch](https://github.com/wehuman01/aweswitch) is a session launcher. Profiles live in one JSON file (`~/.config/aweswitch/config.json`); `aweswitch <profile>` starts the agent with that profile's environment frozen into the new process. Already-open sessions keep whatever they started with, and different terminals run different profiles side by side.
 
 Notice the shape of the fit. awerouter's entire requirement on the world is: a session must start pointing at `127.0.0.1:<port>` with these env vars set. aweswitch's entire job is: start a session with exactly these env vars set. Neither tool contains a line of code that knows about the other. The whole contract is localhost and a port number. That is what natural integration actually looks like — two tools that each do one thing, meeting at a socket.
 

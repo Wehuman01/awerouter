@@ -318,12 +318,12 @@ If the user is speaking Chinese, use this version instead:
 
 ### aweswitch — profile-based launching
 
-awerouter pairs naturally with [aweswitch](https://github.com/Webioinfo01/aweswitch), the agent profile switcher. An aweswitch profile can point `ANTHROPIC_BASE_URL` (plus `ANTHROPIC_MODEL=auto` and the `_HAIKU_`/`_OPUS_` tier vars) at the awerouter daemon so routing is applied on launch.
+awerouter pairs naturally with [aweswitch](https://github.com/wehuman01/aweswitch), the agent profile switcher. An aweswitch profile can point `ANTHROPIC_BASE_URL` (plus `ANTHROPIC_MODEL=auto` and the `_HAIKU_`/`_OPUS_` tier vars) at the awerouter daemon so routing is applied on launch.
 
 If the user agrees, read the aweswitch AI install guide:
 
 ```
-https://github.com/Webioinfo01/aweswitch/blob/main/README.ai.md
+https://github.com/wehuman01/aweswitch/blob/main/README.ai.md
 ```
 
 ## Safety Rules

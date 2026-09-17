@@ -6,7 +6,7 @@ awerouter 是一个智能大语言模型（LLM）路由器，位于你的编程�
 
 但解决路由只做了一半。另一半是知道路由到底好不好用：你的请求流量中有多少真正流向了轻量模型？`longContextThreshold` 是否过于激进？你是在省钱，还是只是在增加延迟？awerouter 随附一套用量分析工具，可以回答这些问题——还有一套技能体系，让智能体替你回答。
 
-GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub：[github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## 技能：让智能体替你管理路由器
 
@@ -19,7 +19,7 @@ awerouter 的设计理念是由智能体来操作。你只需说出想要什么�
 ```bash
 npm install -g aweskill
 aweskill init
-aweskill install mugpeng/awerouter
+aweskill install wehuman01/awerouter
 aweskill agent add skill awerouter --global --agent claude-code
 ```
 
@@ -31,7 +31,7 @@ aweskill agent add skill awerouter --global --agent claude-code
 
 ```bash
 mkdir -p ~/.claude/skills/awerouter/
-curl -fsSL https://raw.githubusercontent.com/mugpeng/awerouter/main/resources/skills/awerouter/SKILL.md -o ~/.claude/skills/awerouter/SKILL.md
+curl -fsSL https://raw.githubusercontent.com/wehuman01/awerouter/main/resources/skills/awerouter/SKILL.md -o ~/.claude/skills/awerouter/SKILL.md
 ```
 
 ### 技能能做什么
@@ -208,7 +208,7 @@ awerouter usage log --all       # 显示过滤窗口内的所有记录
 
 你也可以通过一句话让智能体完成 awerouter 的安装：
 
-> "阅读 https://github.com/mugpeng/awerouter/blob/main/README.ai.md 并按其执行。"
+> "阅读 https://github.com/wehuman01/awerouter/blob/main/README.ai.md 并按其执行。"
 
 智能体会运行 pip install、安装技能、初始化配置、编辑 `~/.zshrc`，然后向你汇报。`awerouter serve` 则由你自己启动。
 
@@ -228,12 +228,12 @@ aweshare 是一个不断壮大的 "awesome" 工具家族的一部分 — CLI 优
 ### CLI 工具
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
-- **[awerouter](https://github.com/mugpeng/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
+- **[awerouter](https://github.com/wehuman01/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
 - **[aweshare](https://github.com/wehuman01/aweshare)** — 通过自建 Hub 共享本地 Ollama/vLLM 后端、国内编程计划或授权的 OpenAI/Anthropic 订阅 — token 的共享经济。
 - **[awewarm](https://github.com/wehuman01/awewarm)** — 订阅窗口保温器，保持 AI 编程套餐窗口激活，适用于本地设置和远程 hub 服务器。
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
+- **[awescholar](https://github.com/wehuman01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
 
 ### 桌面应用
 

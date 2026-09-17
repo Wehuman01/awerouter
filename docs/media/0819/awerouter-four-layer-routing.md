@@ -8,7 +8,7 @@ Most tools answer it by trying to understand the request: an LLM classifier, a k
 
 awerouter makes the opposite bet: **route from structure, not semantics.** The shape of a request — what tools it declares, what model id it carries, how many tokens it holds, what the agent just did — is enough signal to route well, and it costs nothing to read.
 
-GitHub: [github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub: [github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## Four Layers, Four Different Questions
 

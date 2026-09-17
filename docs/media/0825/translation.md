@@ -2,7 +2,7 @@
 
 ![awerouter](../../../logo/logo.png)
 
-双厨狂喜的联动时刻，是属于它和[Webioinfo01/aweswitch: CLI proxy for switching AI model profiles (Claude Code, Codex, etc.)](https://github.com/Webioinfo01/aweswitch) 。
+双厨狂喜的联动时刻，是属于它和[wehuman01/aweswitch: CLI proxy for switching AI model profiles (Claude Code, Codex, etc.)](https://github.com/wehuman01/aweswitch) 。
 
 本地路由器不好写的那一半，没人愿意写。路由本身已经解决：四层、结构信号、零 token。剩下的是最后一公里——让一个真实的会话站到守护进程面前。在正确的 shell 里、在客户端启动之前，导出这几个环境变量，还不能踩到它们当前指向的东西。然后换下一个 agent 再来一遍，而它要的变量名还不一样。教程写到 `export ANTHROPIC_BASE_URL=...` 就收尾了，总感觉少了点什么。
 
@@ -10,11 +10,11 @@
 
 解法不是给路由器再加一个功能，而是你手边可能早已有的那个工具。
 
-GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub：[github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## 另一半早已存在
 
-[aweswitch](https://github.com/Webioinfo01/aweswitch) 是一个会话启动器。profile 存在一个 JSON 文件里（`~/.config/aweswitch/config.json`）；`aweswitch <profile>` 启动 agent，并把该 profile 的环境冻结进新进程。已打开的会话保持它们启动时的样子，不同终端可以并排运行不同 profile。
+[aweswitch](https://github.com/wehuman01/aweswitch) 是一个会话启动器。profile 存在一个 JSON 文件里（`~/.config/aweswitch/config.json`）；`aweswitch <profile>` 启动 agent，并把该 profile 的环境冻结进新进程。已打开的会话保持它们启动时的样子，不同终端可以并排运行不同 profile。
 
 注意这个契合的形状。awerouter 对世界的全部要求是：一个会话启动时必须指向 `127.0.0.1:<port>` 并设好这几个环境变量。aweswitch 的全部工作是：用恰好这几个环境变量启动一个会话。两个工具里没有一行代码知道对方的存在。整份契约就是 localhost 加一个端口号。所谓"天然联动"，就是这个样子——两个各做一件事的工具，在一个 socket 上相遇。
 
@@ -92,12 +92,12 @@ aweshare 是一个不断壮大的 "awesome" 工具家族的一部分 — CLI 优
 ### CLI 工具
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
-- **[awerouter](https://github.com/mugpeng/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Claude Code、Codex 和 OpenCode 的 agent 配置切换器。
+- **[awerouter](https://github.com/wehuman01/awerouter)** — 智能路由器，使用结构信号在 Flash 和 Pro 模型之间分配请求，减少不必要的模型开销。
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — 收藏、分类和恢复 AI 编程会话；与 aweswitch 配合保存配置并一键启动。
 - **[aweshare](https://github.com/wehuman01/aweshare)** — 通过自建 Hub 共享本地 Ollama/vLLM 后端、国内编程计划或授权的 OpenAI/Anthropic 订阅 — token 的共享经济。
 - **[awewarm](https://github.com/wehuman01/awewarm)** — 订阅窗口保温器，保持 AI 编程套餐窗口激活，适用于本地设置和远程 hub 服务器。
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
+- **[awescholar](https://github.com/wehuman01/awescholar)** — 可由 AI agent 操作的科学文献发现和整理工具。
 
 ### 桌面应用
 

@@ -1,6 +1,6 @@
 <div align="center">
   <img src="logo/logo.webp" alt="awerouter" width="860">
-  <h1>awerouter: Smart LLM Router <a href="https://github.com/Webioinfo01/aweskill"><img src="https://raw.githubusercontent.com/Webioinfo01/aweskill/main/logo/aweskill-badge2.svg" alt="aweskill companion"></a></h1>
+  <h1>awerouter: Smart LLM Router <a href="https://github.com/wehuman01/aweskill"><img src="https://raw.githubusercontent.com/wehuman01/aweskill/main/logo/aweskill-badge2.svg" alt="aweskill companion"></a></h1>
   <p><strong>Route cheap/fast tasks to Flash, hard decisions to Pro.</strong></p>
   <p>Transparent same-protocol proxy that routes coding-agent requests by structural signals — no keyword guessing, no LLM classifier. Speaks Anthropic Messages, OpenAI Chat Completions, and OpenAI Responses.</p>
   <p>
@@ -103,7 +103,7 @@ export OPENAI_BASE_URL=http://127.0.0.1:20128/v1      # openai-compatible client
 
 Config edits don't need a restart: serve watches `routing.json` / `providers.json` and hot-reloads changes (a broken file keeps the previous config serving until it parses again — see [Background serving & hot reload](#background-serving--hot-reload)).
 
-**Or launch through [aweswitch](https://github.com/Webioinfo01/aweswitch)** — an aweswitch profile points a client's `BASE_URL` at the daemon, so routing is applied on launch. Run it in your terminal — it starts a new agent session:
+**Or launch through [aweswitch](https://github.com/wehuman01/aweswitch)** — an aweswitch profile points a client's `BASE_URL` at the daemon, so routing is applied on launch. Run it in your terminal — it starts a new agent session:
 
 ```bash
 aweswitch oc-awerouter
@@ -241,7 +241,7 @@ awerouter usage savings      # pro tokens offloaded to flash vs a pro-only basel
 awerouter works best alongside two companion tools:
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI skill package manager for AI agents. Installs the awerouter skill so your agent can manage routing in natural language.
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile switcher. Launches Claude Code, Codex, or OpenCode sessions with a profile that points `BASE_URL` at the awerouter daemon.
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher. Launches Claude Code, Codex, or OpenCode sessions with a profile that points `BASE_URL` at the awerouter daemon.
 
 aweskill lets the agent **manage** routing by operating skills; aweswitch lets you **launch** sessions through it. Configure awerouter once, then start any agent against it with `aweswitch <profile>`.
 
@@ -798,12 +798,12 @@ awerouter is part of a growing family of "awesome" tools — CLI-first, local-fi
 ### CLI Tools
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
 - **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
 - **[aweshare](https://github.com/wehuman01/aweshare)** — Share local Ollama/vLLM backends, domestic coding plans, or authorized OpenAI/Anthropic subscriptions through a self-hosted hub — a sharing economy for tokens.
 - **[awewarm](https://github.com/wehuman01/awewarm)** — Subscription window warmer that keeps AI coding-plan windows active, for local setups and through a remote hub server.
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
+- **[awescholar](https://github.com/wehuman01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
 
 ### Desktop Apps
 

@@ -1,6 +1,6 @@
 <div align="center">
   <img src="logo/logo.webp" alt="awerouter" width="860">
-  <h1>awerouter: 智能 LLM 路由 <a href="https://github.com/Webioinfo01/aweskill"><img src="https://raw.githubusercontent.com/Webioinfo01/aweskill/main/logo/aweskill-badge2.svg" alt="aweskill companion"></a></h1>
+  <h1>awerouter: 智能 LLM 路由 <a href="https://github.com/wehuman01/aweskill"><img src="https://raw.githubusercontent.com/wehuman01/aweskill/main/logo/aweskill-badge2.svg" alt="aweskill companion"></a></h1>
   <p><strong>轻量任务走 Flash，复杂决策走 Pro。</strong></p>
   <p>按请求结构信号做确定性路由的同协议透明代理——不猜语义、不用关键词、不跑分类器。支持 Anthropic Messages、OpenAI Chat Completions、OpenAI Responses 三种协议。</p>
   <p>
@@ -103,7 +103,7 @@ export OPENAI_BASE_URL=http://127.0.0.1:20128/v1      # openai 兼容客户端
 
 改配置不用重启：serve 会监听 `routing.json` / `providers.json` 的修改并热加载（文件写坏时继续用上一份可用配置服务，见[后台运行与热加载](#后台运行与热加载)）。
 
-**或者通过 [aweswitch](https://github.com/Webioinfo01/aweswitch) 启动**——用一个 aweswitch profile 把客户端的 `BASE_URL` 指向 daemon，启动即走路由。在你的终端运行（它会启动新的 agent 会话）：
+**或者通过 [aweswitch](https://github.com/wehuman01/aweswitch) 启动**——用一个 aweswitch profile 把客户端的 `BASE_URL` 指向 daemon，启动即走路由。在你的终端运行（它会启动新的 agent 会话）：
 
 ```bash
 aweswitch oc-awerouter
@@ -241,7 +241,7 @@ awerouter usage savings      # 被卸载到 flash 的 pro token 量（对比纯 
 awerouter 与两个配套工具配合最佳：
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — 面向 AI agent 的 CLI skill 包管理器。安装 awerouter skill，让你的 agent 用自然语言管理路由。
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile 切换器。用指向 awerouter daemon 的 profile 启动 Claude Code、Codex 或 OpenCode 会话。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile 切换器。用指向 awerouter daemon 的 profile 启动 Claude Code、Codex 或 OpenCode 会话。
 
 aweskill 通过管理skills，让 agent **管理**路由；aweswitch 让你**启动**走路由的会话。配置一次 awerouter，之后就能用 `aweswitch <profile>` 把任意 agent 启动到它上面。
 
@@ -795,12 +795,12 @@ awerouter 是一个不断壮大的 "awesome" 工具家族中的一员 — 围绕
 ### CLI 工具
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Claude Code、Codex、OpenCode 的 agent 配置切换器。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Claude Code、Codex、OpenCode 的 agent 配置切换器。
 - **[awerouter](https://github.com/wehuman01/awerouter)** — 智能路由器，用结构信号把请求分给 Flash 或 Pro 模型，减少不必要的模型开销。
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — 收藏、分类、恢复 AI 编程会话，还能搭配 aweswitch 实现保存配置，一键启动。
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — 收藏、分类、恢复 AI 编程会话，还能搭配 aweswitch 实现保存配置，一键启动。
 - **[aweshare](https://github.com/wehuman01/aweshare)** — 通过自建 Hub 共享本地 Ollama/vLLM，或国产厂商 coding plan，或已授权的 OpenAI/Anthropic 帐号订阅，实现 token 的共享经济。
 - **[awewarm](https://github.com/wehuman01/awewarm)** — 订阅窗口保持器，让 AI 编程套餐的窗口持续激活，无论是本地设置，还是通过远程连接的服务器。
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — AI agent 可自主执行的科学文献发现与策展，搜索、标注、筛选和报告学术论文。
+- **[awescholar](https://github.com/wehuman01/awescholar)** — AI agent 可自主执行的科学文献发现与策展，搜索、标注、筛选和报告学术论文。
 
 ### 桌面应用
 

@@ -6,7 +6,7 @@ Here is something most routing tools will not tell you up front: they are locked
 
 awerouter does not have that limitation. It speaks three protocols natively — Anthropic Messages, OpenAI Chat Completions, OpenAI Responses — and within a single routing profile you can mix as many providers as you like inside one protocol group. Crossing protocols means starting another profile of the same router, not adopting a second tool. The router does not care what is on the other end. It only cares which end is cheap and which one is strong.
 
-GitHub: [github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub: [github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## One Profile, Many Providers
 
@@ -114,12 +114,12 @@ aweshare is part of a growing family of "awesome" tools — CLI-first, local-fir
 ### CLI Tools
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
-- **[awerouter](https://github.com/mugpeng/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
+- **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
 - **[aweshare](https://github.com/wehuman01/aweshare)** — Share local Ollama/vLLM backends, domestic coding plans, or authorized OpenAI/Anthropic subscriptions through a self-hosted hub — a sharing economy for tokens.
 - **[awewarm](https://github.com/wehuman01/awewarm)** — Subscription window warmer that keeps AI coding-plan windows active, for local setups and through a remote hub server.
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
+- **[awescholar](https://github.com/wehuman01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
 
 ### Desktop Apps
 

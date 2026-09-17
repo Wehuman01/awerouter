@@ -10,7 +10,7 @@ awerouter was born out of this exact frustration. And it makes a second bet on t
 
 Then I let my agent set the whole thing up.
 
-I told it: "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it." Then I went to get a coffee.
+I told it: "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it." Then I went to get a coffee.
 
 When I came back, awerouter was installed, the skill was registered, two config files sat in `~/.config/awerouter/`, and the env vars were in `~/.zshrc`. It had read the template configs, set up three providers — StepFun for cheap flash work, Anthropic for pro, and an OpenAI-compatible one for Opencode sessions — and wired them into a routing profile.
 
@@ -18,7 +18,7 @@ Then it said: "Run `awerouter serve` in your terminal. I will not start the daem
 
 That is the new shape of installing an agent tool. The install is a task. The agent does tasks. So I gave the task to the agent.
 
-GitHub: [github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub: [github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## The Install: A README the Agent Reads
 
@@ -38,7 +38,7 @@ The `README.ai.md` is a seven-step install contract written for the agent, not t
 
 In Claude Code, Codex, OpenCode, or any of the 47+ agents supported by aweskill, the prompt is the same:
 
-> "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."
+> "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."
 
 The agent does the rest. It runs `pip install`, sets up the skill, initializes the config, edits `~/.zshrc`, and reports back. If something fails — Python too old, missing `pip`, an existing config with profiles you care about — it stops and asks, instead of silently breaking things.
 
@@ -165,7 +165,7 @@ The future of agent tooling is not "tools that work well with agents." It is "to
 
 Tell your agent:
 
-> "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."
+> "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."
 
 Then start the daemon in your own terminal:
 
@@ -194,12 +194,12 @@ aweshare is part of a growing family of "awesome" tools — CLI-first, local-fir
 ### CLI Tools
 
 - **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
-- **[awerouter](https://github.com/mugpeng/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
+- **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
 - **[aweshare](https://github.com/wehuman01/aweshare)** — Share local Ollama/vLLM backends, domestic coding plans, or authorized OpenAI/Anthropic subscriptions through a self-hosted hub — a sharing economy for tokens.
 - **[awewarm](https://github.com/wehuman01/awewarm)** — Subscription window warmer that keeps AI coding-plan windows active, for local setups and through a remote hub server.
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
+- **[awescholar](https://github.com/wehuman01/awescholar)** — AI-agent-operable scientific literature discovery and curation.
 
 ### Desktop Apps
 

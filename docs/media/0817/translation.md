@@ -10,7 +10,7 @@ awerouter 正是诞生于这份憋屈。而且awerouter 他做的更多：路由
 
 于是，我把整套安装交给了我的智能体。
 
-我对它说："Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."（读一下这个 README 并照着做。）然后我去喝了杯咖啡。
+我对它说："Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."（读一下这个 README 并照着做。）然后我去喝了杯咖啡。
 
 回来的时候，awerouter 已经装好，技能已注册，两个配置文件躺在 `~/.config/awerouter/` 里，环境变量写进了 `~/.zshrc`。它读了模板配置，配好了三个提供商——便宜干 flash 活儿的 StepFun、管 pro 的 Anthropic，再加一个给 Opencode 会话用的 OpenAI 兼容端——并把它们接进了一个路由档案。
 
@@ -18,7 +18,7 @@ awerouter 正是诞生于这份憋屈。而且awerouter 他做的更多：路由
 
 这就是安装智能体工具的新形态。安装是一个任务。智能体就是干任务的。所以我把任务交给了智能体。
 
-GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
+GitHub：[github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter)
 
 ## 安装：一份写给智能体的 README
 
@@ -38,7 +38,7 @@ GitHub：[github.com/mugpeng/awerouter](https://github.com/mugpeng/awerouter)
 
 在 Claude Code、Codex、OpenCode，或者 aweskill 支持的 47+ 种智能体里的任何一个，提示词都是同一句：
 
-> "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."
+> "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."
 
 剩下的智能体自己搞定。它跑 `pip install`、装技能、初始化配置、改 `~/.zshrc`，然后回来汇报。如果哪里出了问题——Python 版本太老、缺 `pip`、已有配置里有你在乎的档案——它会停下来问你，而不是闷声把东西搞坏。
 
@@ -165,7 +165,7 @@ awerouter 三关全过。第一关靠 README，第二关靠技能，第三关的
 
 对你的智能体说：
 
-> "Read https://github.com/mugpeng/awerouter/blob/main/README.ai.md and follow it."
+> "Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it."
 
 然后在你自己的终端里启动守护进程：
 
@@ -192,8 +192,8 @@ export ANTHROPIC_BASE_URL=http://127.0.0.1:20128
 awerouter 是我的awesome 工具生态的一部分：
 
 - **[aweskill](https://aweskill.webioinfo.top/)** ——面向 47+ 种 AI 编程智能体的 CLI 优先技能包管理器
-- **[aweswitch](https://github.com/Webioinfo01/aweswitch)** ——Claude Code、Codex、OpenCode 的智能体档案切换器；启动的会话直接指向 awerouter 守护进程
-- **[aweshelf](https://github.com/Webioinfo01/aweshelf)** ——支持档案感知恢复的 AI 编程会话管理器
-- **[awescholar](https://github.com/Webioinfo01/awescholar)** — 自动化科学文献发现
-- **[awerouter](https://github.com/mugpeng/awerouter)** — 智能 LLM 路由器：基于请求的结构化信号，在 Flash（低成本）与 Pro（高能力）模型提供商之间自动分流，为 Agent 兼顾成本、速度与推理质量。
+- **[aweswitch](https://github.com/wehuman01/aweswitch)** ——Claude Code、Codex、OpenCode 的智能体档案切换器；启动的会话直接指向 awerouter 守护进程
+- **[aweshelf](https://github.com/wehuman01/aweshelf)** ——支持档案感知恢复的 AI 编程会话管理器
+- **[awescholar](https://github.com/wehuman01/awescholar)** — 自动化科学文献发现
+- **[awerouter](https://github.com/wehuman01/awerouter)** — 智能 LLM 路由器：基于请求的结构化信号，在 Flash（低成本）与 Pro（高能力）模型提供商之间自动分流，为 Agent 兼顾成本、速度与推理质量。
 
