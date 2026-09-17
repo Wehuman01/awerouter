@@ -36,7 +36,7 @@
 Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it to install and configure awerouter.
 ```
 
-Agent 会安装 CLI、初始化配置（内置模板，或合并进你已有的配置）、配置 providers 和路由，并通过 [aweskill](https://aweskill.webioinfo.top/) 安装 awerouter skill 用于后续路由管理。认证方面，它会扫描你的 shell 配置，找出你已经导出的 key 变量（`GLM_API_KEY`、`STEPFUN_AUTH_TOKEN` 等），在 `providers.json` 里以 `${VAR}` 引用——只报告变量名、不碰值，只有缺失的 key 才会问你要。
+Agent 会安装 CLI、初始化配置（内置模板，或合并进你已有的配置）、配置 providers 和路由，并通过 [aweskill](https://aweskill.wehuman.top/) 安装 awerouter skill 用于后续路由管理。认证方面，它会扫描你的 shell 配置，找出你已经导出的 key 变量（`GLM_API_KEY`、`STEPFUN_AUTH_TOKEN` 等），在 `providers.json` 里以 `${VAR}` 引用——只报告变量名、不碰值，只有缺失的 key 才会问你要。
 
 **配置完成后你可以这样告诉 agent：**
 
@@ -240,7 +240,7 @@ awerouter usage savings      # 被卸载到 flash 的 pro token 量（对比纯 
 
 awerouter 与两个配套工具配合最佳：
 
-- **[aweskill](https://aweskill.webioinfo.top/)** — 面向 AI agent 的 CLI skill 包管理器。安装 awerouter skill，让你的 agent 用自然语言管理路由。
+- **[aweskill](https://aweskill.wehuman.top/)** — 面向 AI agent 的 CLI skill 包管理器。安装 awerouter skill，让你的 agent 用自然语言管理路由。
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile 切换器。用指向 awerouter daemon 的 profile 启动 Claude Code、Codex 或 OpenCode 会话。
 
 aweskill 通过管理skills，让 agent **管理**路由；aweswitch 让你**启动**走路由的会话。配置一次 awerouter，之后就能用 `aweswitch <profile>` 把任意 agent 启动到它上面。
@@ -794,7 +794,7 @@ awerouter 是一个不断壮大的 "awesome" 工具家族中的一员 — 围绕
 
 ### CLI 工具
 
-- **[aweskill](https://aweskill.webioinfo.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
+- **[aweskill](https://aweskill.wehuman.top/)** — CLI 优先的技能包管理器，支持 47+ AI 编程 agent。
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** — Claude Code、Codex、OpenCode 的 agent 配置切换器。
 - **[awerouter](https://github.com/wehuman01/awerouter)** — 智能路由器，用结构信号把请求分给 Flash 或 Pro 模型，减少不必要的模型开销。
 - **[aweshelf](https://github.com/wehuman01/aweshelf)** — 收藏、分类、恢复 AI 编程会话，还能搭配 aweswitch 实现保存配置，一键启动。

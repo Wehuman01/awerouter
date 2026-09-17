@@ -36,7 +36,7 @@ If you are working in Claude Code, Codex, Cursor, or another coding agent, tell 
 Read https://github.com/wehuman01/awerouter/blob/main/README.ai.md and follow it to install and configure awerouter.
 ```
 
-The agent will install the CLI, init the config (a bundled template, or merged into what you already have), configure providers and routing, and install the awerouter skill via [aweskill](https://aweskill.webioinfo.top/) for ongoing routing management. For auth it scans your shell config for API-key variables you already export (`GLM_API_KEY`, `STEPFUN_AUTH_TOKEN`, ...) and references them as `${VAR}` in `providers.json` — it reports variable names only, never values, and only asks for keys you don't already have.
+The agent will install the CLI, init the config (a bundled template, or merged into what you already have), configure providers and routing, and install the awerouter skill via [aweskill](https://aweskill.wehuman.top/) for ongoing routing management. For auth it scans your shell config for API-key variables you already export (`GLM_API_KEY`, `STEPFUN_AUTH_TOKEN`, ...) and references them as `${VAR}` in `providers.json` — it reports variable names only, never values, and only asks for keys you don't already have.
 
 **After setup, you can tell the agent things like:**
 
@@ -240,7 +240,7 @@ awerouter usage savings      # pro tokens offloaded to flash vs a pro-only basel
 
 awerouter works best alongside two companion tools:
 
-- **[aweskill](https://aweskill.webioinfo.top/)** — CLI skill package manager for AI agents. Installs the awerouter skill so your agent can manage routing in natural language.
+- **[aweskill](https://aweskill.wehuman.top/)** — CLI skill package manager for AI agents. Installs the awerouter skill so your agent can manage routing in natural language.
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher. Launches Claude Code, Codex, or OpenCode sessions with a profile that points `BASE_URL` at the awerouter daemon.
 
 aweskill lets the agent **manage** routing by operating skills; aweswitch lets you **launch** sessions through it. Configure awerouter once, then start any agent against it with `aweswitch <profile>`.
@@ -797,7 +797,7 @@ awerouter is part of a growing family of "awesome" tools — CLI-first, local-fi
 
 ### CLI Tools
 
-- **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
+- **[aweskill](https://aweskill.wehuman.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
 - **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
 - **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.

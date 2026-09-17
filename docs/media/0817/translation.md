@@ -27,7 +27,7 @@ GitHub：[github.com/wehuman01/awerouter](https://github.com/wehuman01/awerouter
 `README.ai.md` 是一份七步安装契约，写给智能体，不是写给用户的：
 
 1. `pip install awerouter`，用 `awerouter --version` 验证
-2. 通过 [aweskill](https://aweskill.webioinfo.top/) 安装 `awerouter` 技能（方案 A），或直接 curl 拉取 `SKILL.md`（方案 B）
+2. 通过 [aweskill](https://aweskill.wehuman.top/) 安装 `awerouter` 技能（方案 A），或直接 curl 拉取 `SKILL.md`（方案 B）
 3. 运行 `awerouter init`，创建 `~/.config/awerouter/providers.json` 和 `routing.json`
 4. 读取现有配置，在 `anthropic`、`openai-chat` 或 `openai-responses` 下添加提供商
 5. 把对应的 `export` 行追加到 `~/.zshrc`（或 `~/.bashrc`）
@@ -191,7 +191,7 @@ export ANTHROPIC_BASE_URL=http://127.0.0.1:20128
 
 awerouter 是我的awesome 工具生态的一部分：
 
-- **[aweskill](https://aweskill.webioinfo.top/)** ——面向 47+ 种 AI 编程智能体的 CLI 优先技能包管理器
+- **[aweskill](https://aweskill.wehuman.top/)** ——面向 47+ 种 AI 编程智能体的 CLI 优先技能包管理器
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** ——Claude Code、Codex、OpenCode 的智能体档案切换器；启动的会话直接指向 awerouter 守护进程
 - **[aweshelf](https://github.com/wehuman01/aweshelf)** ——支持档案感知恢复的 AI 编程会话管理器
 - **[awescholar](https://github.com/wehuman01/awescholar)** — 自动化科学文献发现

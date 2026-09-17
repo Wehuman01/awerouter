@@ -27,7 +27,7 @@ Most agent tools ship a `README.md` for humans and a separate `README.ai.md` for
 The `README.ai.md` is a seven-step install contract written for the agent, not the user:
 
 1. `pip install awerouter` and verify with `awerouter --version`
-2. Install the `awerouter` skill via [aweskill](https://aweskill.webioinfo.top/) (Option A) or direct curl of `SKILL.md` (Option B)
+2. Install the `awerouter` skill via [aweskill](https://aweskill.wehuman.top/) (Option A) or direct curl of `SKILL.md` (Option B)
 3. `awerouter init` to create `~/.config/awerouter/providers.json` and `routing.json`
 4. Read the existing config, add providers under `anthropic`, `openai-chat`, or `openai-responses`
 5. Append the matching `export` lines to `~/.zshrc` (or `~/.bashrc`)
@@ -193,7 +193,7 @@ aweshare is part of a growing family of "awesome" tools — CLI-first, local-fir
 
 ### CLI Tools
 
-- **[aweskill](https://aweskill.webioinfo.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
+- **[aweskill](https://aweskill.wehuman.top/)** — CLI-first skill package manager supporting 47+ AI coding agents.
 - **[aweswitch](https://github.com/wehuman01/aweswitch)** — Agent profile switcher for Claude Code, Codex, and OpenCode.
 - **[awerouter](https://github.com/wehuman01/awerouter)** — Smart router that splits requests between Flash and Pro models using structural signals, cutting unnecessary model spend.
 - **[aweshelf](https://github.com/wehuman01/aweshelf)** — Bookmark, categorize, and restore AI coding sessions; pairs with aweswitch to save profiles and launch with one command.
