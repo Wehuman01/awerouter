@@ -1742,3 +1742,55 @@ class TestAwecompressFlag:
         data = json.loads(format_routing_display(settings, profiles))
         assert "awecompress" not in data["off"]
         assert data["on"]["awecompress"]["summaryModel"] == "pro"
+
+
+# ---------------------------------------------------------------------------
+# config validate
+# ---------------------------------------------------------------------------
+
+class TestValidate:
+    def _invoke(self, tmp_path, monkeypatch):
+        from click.testing import CliRunner
+        from awerouter.config import cli
+        monkeypatch.setenv("AWEROUTER_CONFIG_DIR", str(tmp_path))
+        return CliRunner().invoke(cli, ["config", "validate"])
+
+    def _write_config(self, tmp_path):
+        (tmp_path / "providers.json").write_text(json.dumps({"anthropic": {
+            "stepfun": {"base_url": "https://api.stepfun.com/x", "auth": "${K1}"},
+            "anthropic": {"base_url": "https://api.anthropic.com", "auth": "${K2}"},
+        }}))
+        (tmp_path / "routing.json").write_text(json.dumps(
+            {"cc-1": {"protocol": "anthropic", "longContextThreshold": 8000,
+                      "destinations": {"flash": "stepfun,sf-flash",
+                                       "pro": "anthropic,opus"}}}))
+
+    def test_ok_reports_both_files(self, tmp_path, monkeypatch):
+        self._write_config(tmp_path)
+        r = self._invoke(tmp_path, monkeypatch)
+        assert r.exit_code == 0, r.output
+        assert "providers.json (2 providers)" in r.output
+        assert "routing.json (1 profiles)" in r.output
+
+    def test_broken_json_names_file_and_position(self, tmp_path, monkeypatch):
+        self._write_config(tmp_path)
+        (tmp_path / "providers.json").write_text('{"anthropic": {')
+        r = self._invoke(tmp_path, monkeypatch)
+        assert r.exit_code != 0
+        assert "invalid JSON" in r.output
+
+    def test_missing_providers_file(self, tmp_path, monkeypatch):
+        (tmp_path / "routing.json").write_text("{}")
+        r = self._invoke(tmp_path, monkeypatch)
+        assert r.exit_code != 0
+        assert "not found" in r.output
+
+    def test_dangling_destination_fails(self, tmp_path, monkeypatch):
+        (tmp_path / "providers.json").write_text(json.dumps({"anthropic": {
+            "stepfun": {"base_url": "https://api.stepfun.com/x", "auth": "${K1}"}}}))
+        (tmp_path / "routing.json").write_text(json.dumps(
+            {"cc-1": {"protocol": "anthropic", "longContextThreshold": 8000,
+                      "destinations": {"flash": "stepfun,sf-flash",
+                                       "pro": "nope,opus"}}}))
+        r = self._invoke(tmp_path, monkeypatch)
+        assert r.exit_code != 0

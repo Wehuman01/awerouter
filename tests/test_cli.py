@@ -1120,3 +1120,59 @@ class TestMovedConfigCommands:
         assert r.exit_code == 0, r.output
         for name in ("login", "logout", "restore"):
             assert name in r.output
+
+
+class TestRunServeDegrade:
+    """Daemon-mode _run_serve degrades on a broken config; foreground keeps
+    failing fast (see test_server.TestDegradedServe for the real listener)."""
+
+    def test_daemon_mode_degrades_until_signal(self, tmp_path, monkeypatch):
+        _setup(tmp_path, monkeypatch, _providers(), _routing())
+        (tmp_path / "providers.json").write_text("{broken")
+        calls = {}
+
+        def fake_degraded(host, port, port_explicit, exc, name, background):
+            calls["args"] = (host, port, port_explicit, name, background)
+            calls["reason"] = str(exc)
+
+            async def coro():
+                return False  # signal -> shut down
+
+            return coro()
+
+        monkeypatch.setattr("awerouter.cli._serve_degraded", fake_degraded)
+        with pytest.raises(SystemExit) as exc_info:
+            _run_serve("cc-1", None, "127.0.0.1", background=True)
+        assert exc_info.value.code == 0
+        assert calls["args"] == ("127.0.0.1", None, False, "cc-1", True)
+        assert "invalid JSON" in calls["reason"]
+
+    def test_daemon_mode_retries_after_recovery(self, tmp_path, monkeypatch):
+        routing = _routing()
+        _setup(tmp_path, monkeypatch, _providers(), routing)
+        (tmp_path / "providers.json").write_text("{broken")
+
+        def fake_degraded(host, port, port_explicit, exc, name, background):
+            # the "user fixed the config" the retry is waiting for
+            (tmp_path / "providers.json").write_text(json.dumps(_providers()))
+
+            async def coro():
+                return True  # config changed -> retry the real load
+            return coro()
+
+        monkeypatch.setattr("awerouter.cli._serve_degraded", fake_degraded)
+        calls = {}
+
+        async def fake_serve(host, port, providers, profile, settings,
+                             port_explicit=False, background=False):
+            calls["args"] = (port, background)
+
+        monkeypatch.setattr("awerouter.cli._serve", fake_serve)
+        _run_serve("cc-1", 3000, "127.0.0.1", background=True)
+        assert calls["args"] == (3000, True)
+
+    def test_foreground_mode_still_fails_fast(self, tmp_path, monkeypatch):
+        _setup(tmp_path, monkeypatch, _providers(), _routing())
+        (tmp_path / "providers.json").write_text("{broken")
+        with pytest.raises(SystemExit, match="invalid JSON"):
+            _run_serve("cc-1", None, "127.0.0.1", background=False)

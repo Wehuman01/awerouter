@@ -123,6 +123,30 @@ def unregister() -> None:
         pass
 
 
+def set_config_error(message: "str | None") -> None:
+    """Record or clear this process's config-load failure in its registration.
+
+    A daemon can be up while not really serving — a broken on-disk config it
+    is retrying (degraded startup) or a reload it refused while still serving
+    the previous config. Publishing the reason here lets `serve status`, a
+    separate process, show it. Best effort: no registration file yet, or an
+    unreadable one, is silently ignored."""
+    try:
+        path = _pid_file(os.getpid())
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return
+        if message is None:
+            data.pop("config_error", None)
+            data.pop("config_error_at", None)
+        else:
+            data["config_error"] = message
+            data["config_error_at"] = time.time()
+        path.write_text(json.dumps(data) + "\n", encoding="utf-8")
+    except (OSError, json.JSONDecodeError, ValueError):
+        pass
+
+
 def instance_by_pid(pid: int) -> "dict | None":
     for inst in list_instances():
         if inst["pid"] == pid:

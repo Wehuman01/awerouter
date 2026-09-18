@@ -1317,8 +1317,11 @@ def _reload_config(app, profile_name: str) -> bool:
         new_providers, new_profile, new_settings = load_for_profile(profile_name)
         _awecompress_validate(new_profile, new_providers)  # SystemExit → reload skipped below
     except SystemExit as exc:
-        print(f"  config reload skipped (serving the previous config): {exc}")
+        reason = str(exc).removeprefix("awerouter: ").strip()
+        print(f"  config reload skipped (serving the previous config): {reason}")
+        runtime.set_config_error(f"still serving the previous config — {reason}")
         return False
+    runtime.set_config_error(None)
     old_profile = app["profile"]
     auto_line = _resolve_auto_threshold(new_profile, new_settings)
     app["providers"] = new_providers
@@ -1613,6 +1616,103 @@ def _failover_chain(profile, tier: str) -> str:
     return " -> ".join(hops)
 
 
+# ---------------------------------------------------------------------------
+# Degraded startup: the on-disk config cannot load when a daemon starts
+# ---------------------------------------------------------------------------
+
+
+def _create_degraded_app(reason: str) -> web.Application:
+    """One route for everything: 503 with the config error. The port stays
+    bound so clients fail loudly with the reason instead of connection-refused."""
+    async def broken(request: web.Request) -> web.Response:
+        return web.json_response(
+            {"error": {"type": "awerouter_config_error", "message": reason}},
+            status=503,
+        )
+    app = web.Application()
+    app.router.add_route("*", "/{tail:.*}", broken)
+    return app
+
+
+async def _watch_config_until_change() -> None:
+    """Degraded-mode watcher: resolve when the config files change — the same
+    mtime check the real hot-reload watcher polls with."""
+    last = _config_mtimes()
+    while True:
+        await asyncio.sleep(_RELOAD_POLL_S)
+        if _config_mtimes() != last:
+            return
+
+
+async def _wait_degraded(runner, watcher) -> bool:
+    """Degraded tail: wait for SIGTERM/SIGHUP or the watcher finishing (the
+    config files changed). Returns True when the config changed — the caller
+    should retry the real load; False on a signal — shut down. Tears the
+    degraded app down either way."""
+    stop_event = asyncio.Event()
+    got_signal = []
+
+    def _on_signal(_sig, _frame=None) -> None:
+        got_signal.append(True)
+        stop_event.set()
+
+    loop = asyncio.get_running_loop()
+    for sig_name in ("SIGTERM", "SIGHUP"):
+        sig = getattr(signal, sig_name, None)
+        if sig is None:
+            continue
+        try:
+            loop.add_signal_handler(sig, _on_signal)
+        except (NotImplementedError, RuntimeError):  # Windows loops, non-main thread
+            pass
+    watcher.add_done_callback(lambda _: stop_event.set())
+    try:
+        await stop_event.wait()
+    except asyncio.CancelledError:
+        pass
+    finally:
+        watcher.cancel()
+        try:
+            await watcher
+        except asyncio.CancelledError:
+            pass
+        runtime.set_config_error(None)
+        runtime.unregister()
+        await runner.cleanup()
+    return not got_signal
+
+
+async def _serve_degraded(host: str, port: int, port_explicit: bool, exc: SystemExit,
+                          name: str, background: bool) -> bool:
+    """Hold the port while the config cannot load — daemon modes only.
+
+    A resident service whose config is broken at startup would otherwise die
+    into a service-manager crash loop: the port stays down and the reason
+    hides in the serve log. Instead, bind the port, answer every request 503
+    with the reason, and watch the config files: when they load, return so
+    the caller starts the real server in this same process — no restart.
+
+    Returns True when the config files changed (retry the real load), False
+    on SIGTERM/SIGHUP (shut down)."""
+    reason = str(exc).removeprefix("awerouter: ").strip()
+    runner = web.AppRunner(_create_degraded_app(reason))
+    await runner.setup()
+    actual_port = await _bind_site(runner, host, port, port_explicit)
+    print(f"awerouter NOT serving on {host}:{actual_port}  [{name}: config failed to load]")
+    print(f"  error    -> {reason}")
+    print("  behavior -> every request answers 503 with this reason; nothing reaches upstream")
+    print("  recovery -> fix the config (awerouter config validate); serving hot-starts here "
+          "as soon as it loads. stop: awerouter serve stop " + name)
+    try:
+        runtime.register(name, "degraded", actual_port, host, background)
+    except OSError as reg_exc:
+        print(f"  warning -> cannot register this instance ({reg_exc}); "
+              "awerouter serve status/stop won't see it")
+    runtime.set_config_error(f"not serving; every request answers 503 — {reason}")
+    watcher = asyncio.ensure_future(_watch_config_until_change())
+    return await _wait_degraded(runner, watcher)
+
+
 async def _serve(host: str, port: int, providers: dict, profile, settings,
                  port_explicit: bool = False, background: bool = False) -> None:
     auto_line = _resolve_auto_threshold(profile, settings)
@@ -1751,8 +1851,11 @@ def _reload_gateway(app) -> bool:
         for entry in new_entries.values():
             _awecompress_validate(entry.profile, entry.providers)
     except SystemExit as exc:
-        print(f"  config reload skipped (serving the previous config): {exc}")
+        reason = str(exc).removeprefix("awerouter: ").strip()
+        print(f"  config reload skipped (serving the previous config): {reason}")
+        runtime.set_config_error(f"still serving the previous config — {reason}")
         return False
+    runtime.set_config_error(None)
     # Re-materialize "auto" thresholds for the fresh copies (each prints its
     # own evidence line, same as the single-profile reload).
     for entry in new_entries.values():
@@ -1773,7 +1876,18 @@ def _reload_gateway(app) -> bool:
 
 async def _serve_gateway(host: str, port: int, port_explicit: bool = False,
                          background: bool = False) -> None:
-    entries, default_profile = _load_gateway_state()
+    while True:
+        try:
+            entries, default_profile = _load_gateway_state()
+            break
+        except SystemExit as exc:
+            # Daemon modes degrade instead of dying (see _serve_degraded);
+            # a foreground serve keeps the fail-fast contract.
+            if not background:
+                raise
+            if not await _serve_degraded(host, port, port_explicit, exc,
+                                         GATEWAY_PROFILE_NAME, background):
+                raise SystemExit(0)
     # Materialize every "auto" threshold before the socket opens, so no
     # request can race the resolution (same rule as single-profile serve).
     for entry in entries.values():

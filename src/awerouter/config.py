@@ -1088,6 +1088,20 @@ def config_show_cmd(profile):
     click.echo(format_routing_display(p.settings, {profile: p}))
 
 
+@config.command("validate")
+def config_validate_cmd():
+    """Check providers.json and routing.json load cleanly (exit 1 if not).
+
+    Runs the exact checks a serve start runs — JSON syntax, provider and
+    profile validity, cross-references. Zero side effects; the thing to run
+    after any hand edit, and safe to wire into editor hooks or CI."""
+    providers_all = load_providers()
+    _, profiles = load_routing()
+    validate_profiles(providers_all, profiles)
+    click.echo(f"ok: {providers_path()} ({sum(len(g) for g in providers_all.values())} providers)")
+    click.echo(f"ok: {routing_path()} ({len(profiles)} profiles)")
+
+
 @config.command("edit")
 @click.argument("file", required=False,
                 type=click.Choice(["providers", "routing"], case_sensitive=False))

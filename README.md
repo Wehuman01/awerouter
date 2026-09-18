@@ -705,16 +705,18 @@ Behavior follows [Opencode-DCP](https://github.com/Opencode-DCP/opencode-dynamic
 Every serve instance — foreground or background — registers itself under `~/.local/state/awerouter/run/` at bind time, so one command sees them all:
 
 ```bash
-awerouter serve status           # profile, fg/bg/svc, pid, host:port, protocol, uptime
+awerouter serve status           # profile, fg/bg/svc, pid, host:port, protocol, uptime (+ config warnings / last crash)
 awerouter serve stop [PROFILE]   # SIGTERM all instances, or one profile's (graceful shutdown)
 awerouter serve restart [PROFILE]  # apply changed env/secrets: re-install / re-spawn from this shell
 ```
 
-Resident instances show as `svc:launchd` / `svc:systemd`. `serve stop` stops them through the service manager (a plain SIGTERM would be instantly undone by the restart policy) — they return at the next login; `awerouter serve stop [PROFILE] --purge` also removes the service file so they never start again. An installed-but-stopped service is listed by `serve status`. Registration files are keyed by pid; entries whose process no longer exists are pruned automatically, and `serve stop` refuses to signal a pid whose command line no longer looks like awerouter (a reused pid after an unclean kill). `-d`/`--install`/`serve stop`/`serve restart` are POSIX-only.
+Resident instances show as `svc:launchd` / `svc:systemd`. `serve stop` stops them through the service manager (a plain SIGTERM would be instantly undone by the restart policy) — they return at the next login; `awerouter serve stop [PROFILE] --purge` also removes the service file so they never start again. An installed-but-stopped service is listed by `serve status`, with the crash evidence that explains why it is down (the manager's last exit status and the last line of its serve log) — so a daemon that dies at startup is a one-command diagnosis instead of a log hunt. Registration files are keyed by pid; entries whose process no longer exists are pruned automatically, and `serve stop` refuses to signal a pid whose command line no longer looks like awerouter (a reused pid after an unclean kill). `-d`/`--install`/`serve stop`/`serve restart` are POSIX-only.
 
 `serve restart` is the way to apply a changed environment variable or secret the daemon was started with: a resident service is re-installed from the current shell (same command line, port and host as installed, env baked fresh — this also starts an installed-but-stopped service), a plain background instance is stopped and re-spawned from the current shell on the same port, and foreground instances are skipped (they belong to their own terminal). Config-file edits never need it — see hot reload below.
 
-Serve also watches `routing.json` and `providers.json` (1s mtime poll) and hot-reloads changes: destinations, thresholds, tool routing, settings overrides, provider entries — even switching the profile's providers — apply to the next request without a restart. A file that fails to load (mid-save partial write, broken JSON) is announced once and the previous config keeps serving until the file parses again; the one thing a reload cannot do is rebind the listen port — change the `port` field and serve prints a restart hint instead.
+Serve also watches `routing.json` and `providers.json` (1s mtime poll) and hot-reloads changes: destinations, thresholds, tool routing, settings overrides, provider entries — even switching the profile's providers — apply to the next request without a restart. A file that fails to load (mid-save partial write, broken JSON) is announced once and the previous config keeps serving until the file parses again; the one thing a reload cannot do is rebind the listen port — change the `port` field and serve prints a restart hint instead. Both the refused reload and any recovery are visible in `serve status` as a config warning, so a daemon quietly serving a stale config while the on-disk one is broken does not go unnoticed.
+
+Broken config at daemon start is handled the same honest way: a foreground serve fails fast with the parse error (fix and re-run), but a daemon (`-d` / `--install`) **degrades instead of dying** — it holds the port, answers every request with a 503 naming the exact config error, registers as `[degraded]`, and watches the files: the moment they parse, the real server hot-starts in the same process. That turns what used to be a service-manager crash loop (port down, reason buried in the log) into a loud, self-healing state: clients see the reason, `serve status` shows `[degraded]`, and `awerouter config validate` — which runs the exact checks a serve start runs, zero side effects — is the quickest way to check a hand edit before restarting anything.
 
 ## Commands
 
@@ -730,6 +732,7 @@ awerouter <PROFILE>                   # shorthand for serve run PROFILE (also ta
 awerouter self-update [--check]        # upgrade to the latest PyPI release (--check: versions only)
 awerouter config path                 # print both config file paths
 awerouter config show [PROFILE]       # redacted config; PROFILE = its providers + entry only
+awerouter config validate             # check both config files load cleanly (exit 1 + file:line if not)
 awerouter config edit [providers|routing]  # open one file in $EDITOR (backs up to .bak first)
 awerouter config login [claude|codex] [dir]  # log in a subscription account (claude: browser PKCE); dir = that account's authHome
 awerouter config logout [claude|codex]     # remove a stored subscription login

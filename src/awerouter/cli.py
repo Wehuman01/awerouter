@@ -37,7 +37,13 @@ from awerouter.config import (
     validate_profiles,
 )
 from awerouter.protocols import PROTOCOL_IDS, effective_tokens
-from awerouter.server import GATEWAY_PROFILE_NAME, _load_gateway_state, _serve, _serve_gateway
+from awerouter.server import (
+    GATEWAY_PROFILE_NAME,
+    _load_gateway_state,
+    _serve,
+    _serve_degraded,
+    _serve_gateway,
+)
 from awerouter.types import AutoThresholdConfig
 from awerouter.update_check import _version_gte, get_pypi_latest, skill_refresh_hint
 
@@ -59,10 +65,21 @@ def _resolve_port(cli_port, profile) -> tuple[int, bool]:
 
 
 def _run_serve(profile, port, host: str, background: bool = False) -> None:
-    if profile:
-        providers, routing, settings = load_for_profile(profile)
-    else:
-        providers, routing, settings = load_default_profile()
+    while True:
+        try:
+            if profile:
+                providers, routing, settings = load_for_profile(profile)
+            else:
+                providers, routing, settings = load_default_profile()
+            break
+        except SystemExit as exc:
+            # Daemon modes degrade instead of dying (see _serve_degraded);
+            # a foreground serve keeps the fail-fast contract.
+            if not background:
+                raise
+            if not asyncio.run(_serve_degraded(host, port, port is not None, exc,
+                                               profile or "unknown", background)):
+                raise SystemExit(0)
     port, port_explicit = _resolve_port(port, routing)
     try:
         asyncio.run(_serve(host, port, providers, routing, settings, port_explicit, background))
@@ -375,6 +392,18 @@ def _fmt_uptime(started) -> str:
     return f"{d}d{h}h"
 
 
+def _config_error_lines(inst: dict) -> list:
+    """Warning lines for an instance whose daemon published a config-load
+    failure (degraded startup, or a hot reload it refused)."""
+    message = inst.get("config_error")
+    if not message:
+        return []
+    at = inst.get("config_error_at")
+    when = (time.strftime("%Y-%m-%d %H:%M", time.localtime(at))
+            if isinstance(at, (int, float)) else "?")
+    return [f"  warning -> on-disk config failed to load at {when}: {message}"]
+
+
 @serve.command("status")
 def status_cmd():
     """Show running serve instances (foreground, background, resident)."""
@@ -397,11 +426,16 @@ def status_cmd():
             f"{inst.get('host', '?')}:{inst.get('port', '?')}\t"
             f"[{inst.get('protocol', '?')}]\tup {_fmt_uptime(inst.get('started'))}"
         )
+        for line in _config_error_lines(inst):
+            click.echo(line)
     for s in idle:
         click.echo(
             f"{s['name']}\tsvc:{s['kind']}\t(resident service installed — not running; "
             f"starts at login, remove: awerouter serve stop {s['name']} --purge)"
         )
+        note = service.last_failure_note(s["name"])
+        if note:
+            click.echo(f"  last failure -> {note}")
 
 
 @serve.command("stop")

@@ -161,3 +161,20 @@ class TestIsAwerouterProcess:
         finally:
             sp.kill()
             sp.wait()
+
+
+class TestSetConfigError:
+    def test_roundtrip_via_registration(self):
+        runtime.register("cc-1", "anthropic", 20128, "127.0.0.1", False)
+        runtime.set_config_error("invalid JSON in providers.json: line 48")
+        inst = runtime.instance_by_pid(os.getpid())
+        assert inst["config_error"] == "invalid JSON in providers.json: line 48"
+        assert isinstance(inst["config_error_at"], float)
+        runtime.set_config_error(None)
+        inst = runtime.instance_by_pid(os.getpid())
+        assert "config_error" not in inst
+        assert "config_error_at" not in inst
+
+    def test_without_registration_is_silent(self):
+        runtime.set_config_error("boom")  # must not raise, must not create anything
+        assert runtime.list_instances() == []

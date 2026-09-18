@@ -7,6 +7,7 @@ import re
 import socket
 import time
 
+import aiohttp
 import pytest
 from aiohttp import web
 from aiohttp.test_utils import TestClient, TestServer
@@ -25,6 +26,7 @@ from awerouter.server import (
     _reload_config,
     _resolve_auto_threshold,
     _serve,
+    _serve_gateway,
     create_app,
 )
 from awerouter.types import AwecompressConfig, Destination, OdcpConfig, Provider, RoutingProfile, Settings
@@ -2589,3 +2591,71 @@ class TestAwecompressPipeline:
             awecompress=AwecompressConfig(summary_model="no-such-model"))
         with pytest.raises(SystemExit, match="no-such-model"):
             create_app(_providers(0), profile, SETTINGS)
+
+
+class TestDegradedServe:
+    """Daemon-mode startup with a broken config holds the port and answers
+    503 with the reason until the config loads — no crash loop."""
+
+    def _broken_config(self, tmp_path):
+        (tmp_path / "providers.json").write_text('{"anthropic": {')
+        (tmp_path / "routing.json").write_text("{}")
+
+    def _fixed_config(self, tmp_path):
+        (tmp_path / "providers.json").write_text(json.dumps({"anthropic": {
+            "stepfun": {"base_url": "https://api.stepfun.com/x", "auth": "${STEPFUN_KEY}"},
+            "anthropic": {"base_url": "https://api.anthropic.com", "auth": "${ANTHROPIC_KEY}"},
+        }}))
+        (tmp_path / "routing.json").write_text(json.dumps(
+            {"cc-1": {"protocol": "anthropic", "longContextThreshold": 8000,
+                      "destinations": {"flash": "stepfun,sf-flash",
+                                       "pro": "anthropic,opus"}}}))
+
+    def test_degraded_503_then_hot_recovers(self, tmp_path, monkeypatch, capsys):
+        from awerouter import runtime
+        monkeypatch.setenv("AWEROUTER_CONFIG_DIR", str(tmp_path))
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        monkeypatch.setenv("STEPFUN_KEY", "k1")
+        monkeypatch.setenv("ANTHROPIC_KEY", "k2")
+        self._broken_config(tmp_path)
+
+        async def t():
+            task = asyncio.ensure_future(
+                _serve_gateway("127.0.0.1", 0, False, background=True))
+            await asyncio.sleep(0.5)
+            inst = runtime.instance_by_pid(os.getpid())
+            assert inst is not None, "degraded instance must register"
+            assert inst["protocol"] == "degraded"
+            assert inst["config_error"].startswith(
+                "not serving; every request answers 503")
+            async with aiohttp.ClientSession() as session:
+                async with session.get(
+                        f"http://127.0.0.1:{inst['port']}/v1/models") as resp:
+                    assert resp.status == 503
+                    body = await resp.json()
+                    assert body["error"]["type"] == "awerouter_config_error"
+                    assert "invalid JSON" in body["error"]["message"]
+            out = capsys.readouterr().out
+            assert "NOT serving" in out
+            assert "awerouter config validate" in out
+            # fix the config -> the degraded watcher resolves -> the real
+            # server hot-starts in the same process
+            self._fixed_config(tmp_path)
+            for _ in range(60):
+                await asyncio.sleep(0.2)
+                inst = runtime.instance_by_pid(os.getpid())
+                if inst is not None and inst["protocol"] != "degraded":
+                    break
+            inst = runtime.instance_by_pid(os.getpid())
+            assert inst is not None and inst["protocol"] != "degraded"
+            assert "config_error" not in inst
+            task.cancel()
+            await task
+
+        asyncio.run(t())
+
+    def test_foreground_keeps_fail_fast(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("AWEROUTER_CONFIG_DIR", str(tmp_path))
+        self._broken_config(tmp_path)
+        with pytest.raises(SystemExit, match="invalid JSON"):
+            asyncio.run(_serve_gateway("127.0.0.1", 0, False, background=False))

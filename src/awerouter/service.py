@@ -453,3 +453,72 @@ def installed_services() -> list:
             if match:
                 out.append({"name": match.group(1).strip(), "kind": kind, "path": path})
     return out
+
+
+# A crash's evidence is worth one status line; more than this many characters
+# of a log line is detail for the log, not for `serve status`.
+_FAILURE_NOTE_MAX = 200
+
+
+def _last_log_line(name: str) -> str:
+    """Last non-blank line of the daemon's serve log ('' if unreadable)."""
+    try:
+        lines = [ln.strip() for ln in
+                 runtime.serve_log_path(name).read_text(encoding="utf-8",
+                                                        errors="replace").splitlines()]
+        return next((ln for ln in reversed(lines) if ln), "")
+    except OSError:
+        return ""
+
+
+def _launchd_last_exit(name: str) -> "int | None":
+    """The job's last exit status per launchctl ('' when it cannot tell)."""
+    out = _run(["launchctl", "list", _label(service_slug(name))])
+    if out.returncode != 0:
+        return None
+    rows = out.stdout.splitlines()[1:]  # drop the PID/Status/Label header
+    for row in rows:
+        parts = row.split("\t")
+        if len(parts) >= 2 and parts[1].strip().isdigit():
+            return int(parts[1])
+    return None
+
+
+def _systemd_last_exit(name: str) -> "int | None":
+    """The unit's ExecMainStatus per systemctl ('' when it cannot tell)."""
+    out = _systemctl(["show", _unit(service_slug(name)),
+                      "--property=ExecMainStatus"])
+    if out.returncode != 0:
+        return None
+    match = re.search(r"^ExecMainStatus=(\d+)$", out.stdout, re.MULTILINE)
+    return int(match.group(1)) if match else None
+
+
+def last_failure_note(name: str) -> str:
+    """One-line reason a resident service is down, or '' when there is none.
+
+    Best effort, for `serve status`: the service manager's last exit status
+    plus — when that says the daemon crashed — the last line of its serve
+    log (the error that killed it). Read failures degrade to ''."""
+    kind = service_kind()
+    if kind is None:
+        return ""
+    try:
+        if kind == "launchd":
+            exit_status = _launchd_last_exit(name)
+        else:
+            exit_status = _systemd_last_exit(name)
+    except (OSError, subprocess.SubprocessError):
+        exit_status = None
+    parts = []
+    line = _last_log_line(name)
+    if exit_status:
+        parts.append(f"exit {exit_status}")
+        if line:
+            parts.append(line[:_FAILURE_NOTE_MAX])
+    elif line.startswith("awerouter:") or "Traceback" in line:
+        # No manager verdict (or a clean one): only quote the log when it
+        # looks like an error, so a clean stop's last banner line doesn't
+        # pose as a failure.
+        parts.append(line[:_FAILURE_NOTE_MAX])
+    return " — ".join(parts)

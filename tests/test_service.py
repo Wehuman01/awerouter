@@ -591,3 +591,82 @@ class TestRestart:
         r = CliRunner().invoke(cli, ["serve", "restart", "cc-1"])
         assert r.exit_code == 0, r.output
         assert "(nothing to restart" in r.output
+
+
+class TestLastFailureNote:
+    def test_exit_and_log_line_compose(self, tmp_path, monkeypatch):
+        _launchd(tmp_path, monkeypatch)
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        log = runtime.serve_log_path("cc-1")
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("awerouter listening on 127.0.0.1:20128\n"
+                       "awerouter: invalid JSON in providers.json: line 48\n",
+                       encoding="utf-8")
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 0, "PID\tStatus\tLabel\n\t1\tcom.awerouter.serve.cc-1\n", ""))
+        assert service.last_failure_note("cc-1") == (
+            "exit 1 — awerouter: invalid JSON in providers.json: line 48")
+
+    def test_no_verdict_and_clean_log_is_empty(self, tmp_path, monkeypatch):
+        _launchd(tmp_path, monkeypatch)
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        log = runtime.serve_log_path("cc-1")
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("awerouter listening on 127.0.0.1:20128\n", encoding="utf-8")
+        # launchctl cannot tell (nonzero/absent): a clean stop's banner line
+        # must not pose as a failure
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 1, "", ""))
+        assert service.last_failure_note("cc-1") == ""
+
+    def test_error_shaped_log_without_exit_verdict(self, tmp_path, monkeypatch):
+        _launchd(tmp_path, monkeypatch)
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        log = runtime.serve_log_path("cc-1")
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("awerouter: invalid JSON in providers.json: line 48\n",
+                       encoding="utf-8")
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 1, "", ""))
+        assert service.last_failure_note("cc-1") == (
+            "awerouter: invalid JSON in providers.json: line 48")
+
+    def test_missing_log_and_unknown_job(self, tmp_path, monkeypatch):
+        _launchd(tmp_path, monkeypatch)
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 1, "", ""))
+        assert service.last_failure_note("cc-1") == ""
+
+    def test_long_log_line_is_clipped(self, tmp_path, monkeypatch):
+        _launchd(tmp_path, monkeypatch)
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        log = runtime.serve_log_path("cc-1")
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("awerouter: " + "x" * 500, encoding="utf-8")
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 0, "PID\tStatus\tLabel\n\t1\tcom.awerouter.serve.cc-1\n", ""))
+        note = service.last_failure_note("cc-1")
+        assert note.startswith("exit 1 — awerouter: ")
+        assert len(note) <= 220
+
+    def test_status_shows_last_failure_for_idle_service(self, tmp_path, monkeypatch):
+        _setup(tmp_path, monkeypatch, _providers(), _routing())
+        monkeypatch.setenv("AWEROUTER_LOG_DIR", str(tmp_path / "state"))
+        agents = _launchd(tmp_path, monkeypatch)
+        agents.mkdir(parents=True)
+        with open(agents / "com.awerouter.serve.cc-1.plist", "wb") as handle:
+            plistlib.dump(service.build_plist(
+                "com.awerouter.serve.cc-1",
+                ["/usr/bin/python", "-m", "awerouter", "__serve_daemon__", "cc-1"],
+                runtime.serve_log_path("cc-1"), {}), handle)
+        log = runtime.serve_log_path("cc-1")
+        log.parent.mkdir(parents=True, exist_ok=True)
+        log.write_text("awerouter: invalid JSON in providers.json: line 48\n",
+                       encoding="utf-8")
+        monkeypatch.setattr(service, "_run", lambda argv, **kw: subprocess.CompletedProcess(
+            argv, 0, "PID\tStatus\tLabel\n\t1\tcom.awerouter.serve.cc-1\n", ""))
+        r = CliRunner().invoke(cli, ["serve", "status"])
+        assert r.exit_code == 0, r.output
+        assert "cc-1\tsvc:launchd\t(resident service installed — not running" in r.output
+        assert "last failure -> exit 1 — awerouter: invalid JSON in providers.json: line 48" in r.output
