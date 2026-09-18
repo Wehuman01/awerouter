@@ -1,5 +1,9 @@
 """PyPI update check: post-command reminder plus a cache-based serve-banner hint."""
 
+# Vendored across the awe series: awerouter, aweswitch, aweshelf, and awewarm each
+# carry a near-identical copy (no shared runtime dependency, by design). Keep
+# behavioral fixes in sync manually across the four copies. Last synced: 2026-09-19.
+
 from __future__ import annotations
 
 import json

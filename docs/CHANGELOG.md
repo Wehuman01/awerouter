@@ -1,5 +1,20 @@
 # Changelog
 
+## v0.6.3
+
+Serve-mode resilience and repo housekeeping: a broken config now surfaces as a visible state in serve mode instead of a crash loop, and the docs adopt the wehuman01 links plus the shared awecontrib verify entry.
+
+### Fixed
+- Serve mode surfaces a broken-config state instead of crash-looping.
+
+### Documentation
+- Add awefork, awecontrib, and AgentX to the ecosystem section.
+- Point aweskill website links at aweskill.wehuman.top.
+- Retarget companion tool and self links to wehuman01.
+
+### CI
+- Adopt the awecontrib verify entry point.
+
 ## v0.6.2
 
 Three token-saver layers and multi-account logins: awecompress frozen-summary compression joins ODCP and RTK, subscription logins multiply via `authHome`, and a batch of integration hardening fixes lands with the first PyPI release of awecompress.
